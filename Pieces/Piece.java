@@ -1,9 +1,9 @@
-package NewChess.Pieces;
+package Pieces;
 
 import java.awt.*;
 import java.util.*;
-import NewChess.GUI.*;
-import NewChess.Game.*;
+import GUI.*;
+import Game.*;
 
 public abstract class Piece {
 

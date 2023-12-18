@@ -1,10 +1,10 @@
-package NewChess.Pieces;
+package Pieces;
 
 import java.util.ArrayList;
 
-import NewChess.GUI.ChessColor;
-import NewChess.Game.Board;
-import NewChess.Game.Pair;
+import GUI.ChessColor;
+import Board;
+import Pair;
 
 public class King extends Piece {
 

@@ -1,12 +1,12 @@
-package NewChess.GUI;
+package GUI;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import NewChess.Game.*;
+import Game.*;
 import java.util.*;
 import javax.swing.*;
-import NewChess.Pieces.*;
+import Pieces.*;
 
 public class ChessBoard extends JPanel implements ActionListener {
 

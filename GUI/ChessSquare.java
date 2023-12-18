@@ -1,7 +1,7 @@
-package NewChess.GUI;
+package GUI;
 
 import java.awt.Color;
-import NewChess.Pieces.Piece;
+import Pieces.Piece;
 
 import javax.swing.*;
 

@@ -1,6 +1,6 @@
-package NewChess.Game;
+package Game;
 
-import NewChess.GUI.ChessColor;
+import GUI.ChessColor;
 
 /*
  * A simple class which helps to keep track of the player turn between two players

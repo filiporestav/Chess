@@ -1,4 +1,4 @@
-package NewChess.Game;
+package Game;
 
 /*
  * A simple little class which handles the switching between the

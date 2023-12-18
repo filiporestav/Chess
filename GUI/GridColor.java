@@ -1,4 +1,4 @@
-package NewChess.GUI;
+package GUI;
 
 import java.awt.Color;
 

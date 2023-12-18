@@ -1,8 +1,8 @@
-package NewChess.GUI;
+package GUI;
 
 import java.awt.*;
 import javax.swing.*;
-import NewChess.Game.Board;
+import Game.Board;
 
 public class ChessWindow extends JFrame {
     

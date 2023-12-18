@@ -1,9 +1,9 @@
-package NewChess.Game;
+package Game;
 
 import java.util.ArrayList;
 
-import NewChess.GUI.ChessColor;
-import NewChess.Pieces.*;
+import GUI.ChessColor;
+import Pieces.*;
 
 public class Board {
     

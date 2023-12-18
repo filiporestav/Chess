@@ -1,4 +1,4 @@
-package NewChess.GUI;
+package GUI;
 
 public enum ChessColor {
     BLACK,

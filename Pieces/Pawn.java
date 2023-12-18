@@ -1,7 +1,7 @@
-package NewChess.Pieces;
+package Pieces;
 
-import NewChess.GUI.ChessColor;
-import NewChess.Game.*;
+import GUI.ChessColor;
+import Game.*;
 import java.util.*;
 
 public class Pawn extends Piece {

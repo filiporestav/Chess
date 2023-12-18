@@ -1,4 +1,4 @@
-package NewChess.Game;
+package Game;
 
 enum GameState {
     SELECT,

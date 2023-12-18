@@ -1,9 +1,9 @@
-package NewChess.GUI;
+package GUI;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import NewChess.Pieces.Piece;
+import Pieces.Piece;
 
 public class ChessImage {
 
