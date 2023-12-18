@@ -13,15 +13,48 @@ public class Queen extends Piece {
     }
 
     @Override
-    public boolean move(int x, int y) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'move'");
+    public ArrayList<Pair<Integer, Integer>> getAvailableMoves() {
+        ArrayList<Pair<Integer, Integer>> pairList = new ArrayList<>(); // Create a new pairList each time, as position changes.
+        
+        int[][] queenDirections = {
+        {-1, -1}, {-1, 0}, {-1, 1},
+        {0, -1}, {0, 1},
+        {1, -1}, {1, 0}, {1, 1}
+        };
+
+        for (int direction[] : queenDirections) {
+            addMovesInDirection(pairList, direction[0], direction[1]);
+        }
+        this.availableMoves = pairList;
+        return pairList;
     }
 
-    @Override
-    public ArrayList<Pair<Integer, Integer>> getAvailableMoves() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAvailableMoves'");
+    /*
+     * Helper method to add available moves for the bishop
+     */
+    private void addMovesInDirection(ArrayList<Pair<Integer, Integer>> pairList, int rowDirection, int colDirection) {
+        int currRow = this.row + rowDirection;
+        int currCol = this.col + colDirection;
+
+        while (board.isValidPosition(currRow, currCol)) {
+            Piece pieceAtCurrentPosition = board.getPieceAt(currRow, currCol);
+
+            if (pieceAtCurrentPosition == null) {
+                // If empty square, add it to available moves
+                pairList.add(new Pair<>(currRow, currCol));
+            }
+            else if (pieceAtCurrentPosition.getColor() != this.color) {
+                // Capture opponents piece
+                pairList.add(new Pair<>(currRow, currCol));
+                break; // Do not continue to add in this direction
+            }
+            else { // Own piece blocking, do not add in this direction
+                break; 
+            }
+            
+            currRow += rowDirection;
+            currCol += colDirection;
+        }
     }
     
 }

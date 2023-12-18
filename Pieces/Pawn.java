@@ -13,41 +13,42 @@ public class Pawn extends Piece {
     @Override
     public ArrayList<Pair<Integer, Integer>> getAvailableMoves() {
         ArrayList<Pair<Integer, Integer>> pairList = new ArrayList<>();
-        
-        // If white pawn, it can only move in the negative y-direction.
-        if (color.equals(ChessColor.WHITE)) {
-            if (this.row==6) {
-                pairList.add(new Pair<Integer,Integer>(this.row-1, this.col));
-                pairList.add(new Pair<Integer,Integer>(this.row-2, this.col));
-            }
-            if (board.getPieceAt(this.row-1, this.col-1)!=null) {
-                pairList.add(new Pair<Integer,Integer>(this.row-1, this.col-1));
-            }
-            if (board.getPieceAt(this.row-1, this.col+1)!=null) {
-                pairList.add(new Pair<Integer,Integer>(this.row-1, this.col+1));
-            }
-            if (board.getPieceAt(this.row-1, this.col) == null) {
-                pairList.add(new Pair<Integer,Integer>(this.row-1, this.col));
+        int direction = (color == ChessColor.WHITE) ? -1 : 1;
+
+        // Check one square forward
+        int targetRow = this.row + direction;
+        if (board.isValidPosition(targetRow, this.col) && board.getPieceAt(targetRow, this.col)==null) {
+            pairList.add(new Pair<>(targetRow, this.col));
+
+            // Check two squares forward for the initial move
+            targetRow = this.row + 2 * direction;
+            if (this.row == (color == ChessColor.WHITE ? 6 : 1) && board.isValidPosition(targetRow, this.col)) {
+                pairList.add(new Pair<>(targetRow, this.col));
             }
         }
 
-        // If black pawn, it can only move in the positive y-direction.
-        if (color.equals(ChessColor.BLACK)) {
-            if (this.row==1) {
-                pairList.add(new Pair<Integer,Integer>(this.row+1, this.col));
-                pairList.add(new Pair<Integer,Integer>(this.row+2, this.col));
-            }
-            if (board.getPieceAt(this.row+1, this.col+1)!=null) {
-                pairList.add(new Pair<Integer,Integer>(this.row+1, this.col+1));
-            }
-            if (board.getPieceAt(this.row+1, this.col-1)!=null) {
-                pairList.add(new Pair<Integer,Integer>(this.row+1, this.col-1));
-            }
-            if (board.getPieceAt(this.row+1, this.col) == null) {
-                pairList.add(new Pair<Integer,Integer>(this.row+1, this.col));
-            }
-        }
+        // Check diagonal captures
+        checkCapture(pairList, this.row + direction, this.col - 1);
+        checkCapture(pairList, this.row + direction, this.col + 1);
+
         this.availableMoves = pairList;
         return pairList;
+    }
+
+    private void checkCapture(ArrayList<Pair<Integer, Integer>> pairList, int targetRow, int targetCol) {
+        if (board.isValidPosition(targetRow, targetCol) && board.getPieceAt(targetRow, targetCol) != null 
+        && board.getPieceAt(targetRow, targetCol).getColor() != this.color) {
+            pairList.add(new Pair<>(targetRow, targetCol));
+        }
+    }
+
+    public boolean promotion() {
+        if (this.row == 0 && this.color.equals(ChessColor.WHITE)) {
+            return true;
+        }
+        else if (this.row == 7 && this.color.equals(ChessColor.BLACK)) {
+            return true;
+        }
+        return false;
     }
 }

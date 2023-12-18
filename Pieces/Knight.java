@@ -13,19 +13,31 @@ public class Knight extends Piece {
     }
 
     @Override
-    public boolean move(int targetRow, int targetCol) {
-        int y_difference = this.row-targetRow; // Different between current row and target row
-        int x_difference = this.col-targetCol;
-        boolean capture_try = board.getPieceAt(targetRow, targetCol)!=null; // Returns true if it is an attempt to capture
-        
-        return true;
-    
-    }
-
-    @Override
     public ArrayList<Pair<Integer, Integer>> getAvailableMoves() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAvailableMoves'");
+        ArrayList<Pair<Integer, Integer>> pairList = new ArrayList<>();
+        
+        int[][] knightMoves = {
+            {-2, -1,}, {-2, 1},
+            {-1, -2}, {-1, 2},
+            {1, -2}, {1, 2},
+            {2, -1}, {2, 1}
+        };
+
+        for (int[] move : knightMoves) {
+            int newY = this.row + move[0]; // Representing the y coordinate
+            int newX = this.col + move[1]; // Representing the x coordinare
+
+            if (board.isValidPosition(newY, newX)) {
+                if (board.getPieceAt(newY, newX) == null) { // If empty square
+                    pairList.add(new Pair<>(newY, newX));
+                }
+                else if (board.getPieceAt(newY, newX).getColor() != this.color) { // Capture case
+                    pairList.add(new Pair<>(newY, newX));
+                }
+            }
+        }
+        this.availableMoves = pairList;
+        return pairList;
     }
     
 }

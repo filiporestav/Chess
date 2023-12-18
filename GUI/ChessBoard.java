@@ -64,7 +64,8 @@ public class ChessBoard extends JPanel implements ActionListener {
     private void highlightChoices() {
         int row = this.selectedSquare.getRow();
         int col = this.selectedSquare.getCol();
-        availableMoves = pieceBoard.getAvailableMoves(row, col);
+        availableMoves = pieceBoard.getPieceAt(row, col).getAvailableMoves();
+        //availableMoves = pieceBoard.getAvailableMoves(row, col);
         for (Pair<Integer, Integer> indices : availableMoves) {
             GUIboard[indices.getRow()][indices.getCol()].setSelectColor();
         }
@@ -89,7 +90,7 @@ public class ChessBoard extends JPanel implements ActionListener {
         int row = btn.getRow();
         int col = btn.getCol();
 
-        if (pieceBoard.movePieceFrom(row, col) && btn.getPiece() != null) {
+        if (pieceBoard.movePieceFrom(row, col)) {
             if (this.selectedSquare != null) {
                 selectedSquare.setColor(); 
                 unhighlightChoices();

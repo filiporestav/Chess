@@ -75,4 +75,17 @@ public abstract class Piece {
      * Returns a list with the available moves for this piece.
      */
     public abstract ArrayList<Pair<Integer, Integer>> getAvailableMoves();
+
+    /*
+     * Method which checks if the king is in check due to this piece.
+     */
+    public boolean check() {
+        for (Pair<Integer, Integer> coordinates : getAvailableMoves()) {
+            Piece piece = board.getPieceAt(coordinates.getRow(), coordinates.getCol());
+            if (piece!= null) {
+                if (piece.getType()==PieceType.KING && piece.getColor()!=this.color) return true;
+            }
+        }
+        return false;
+    }
 }

@@ -1,7 +1,5 @@
 package Game;
 
-import java.util.ArrayList;
-
 import GUI.ChessColor;
 import Pieces.*;
 
@@ -86,6 +84,21 @@ public class Board {
         if (stateTracker.getState().equals(GameState.DEPLOY)) {
             if (this.selectedPiece.move(row, col)) {
                 board[row][col] = selectedPiece;
+
+                // Check if promotion is occuring, and handle it by converting the selected pawn to a queen
+                if (this.selectedPiece instanceof Pawn) {
+                    Pawn pawn = (Pawn) selectedPiece;
+                    System.out.println("Pawn promotion: " + pawn.promotion());
+                    if (pawn.promotion()) {
+                        ChessColor color = row==0 ? ChessColor.WHITE : ChessColor.BLACK;
+                        System.out.println("Pawn is promoting!");
+                        this.selectedPiece = new Queen(row, col, PieceType.QUEEN, color, this);
+                    }
+                }
+                if (this.selectedPiece.check()) {
+                    System.out.println("Check! Please move the king.");
+                }
+                //board[row][col] = this.selectedPiece; // Set the selected piece at the new location
                 turnTracker.changePlayerTurn();
                 stateTracker.changeState();
                 return true;
@@ -111,14 +124,6 @@ public class Board {
 
     public String getMessage() {
         return this.message;
-    }
-
-    /*
-     * Returns the available moves for a piece at a row and column.
-     */
-    public ArrayList<Pair<Integer, Integer>> getAvailableMoves(int row, int col) {
-        if (board[row][col] == null) return null;
-        else return board[row][col].getAvailableMoves();
     }
 
     /*
