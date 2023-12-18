@@ -13,22 +13,6 @@ public class King extends Piece {
     }
 
     @Override
-    public boolean move(int targetRow, int targetCol) {
-        Piece targetPiece = board.getPieceAt(targetRow, targetCol);
-
-        if (targetPiece != null && targetPiece.getColor() == this.color) {
-            return false; // If same color as our king
-        }
-
-        if (this.availableMoves.contains(new Pair<>(targetRow, targetCol))) {
-            board.removePiece(this.row, this.col);
-            updateCoordinates(targetRow, targetCol);
-            return true;
-        }
-        else return false;
-    }
-
-    @Override
     public ArrayList<Pair<Integer, Integer>> getAvailableMoves() {
         ArrayList<Pair<Integer, Integer>> pairList = new ArrayList<>();
 

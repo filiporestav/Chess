@@ -13,16 +13,6 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public boolean move(int targetRow, int targetCol) {
-        if (this.availableMoves.contains(new Pair<>(targetRow, targetCol))) {
-            board.removePiece(this.row, this.col);
-            updateCoordinates(targetRow, targetCol);
-            return true;
-        }
-        else return false;
-    }
-
-    @Override
     public ArrayList<Pair<Integer, Integer>> getAvailableMoves() {
         ArrayList<Pair<Integer, Integer>> pairList = new ArrayList<>(); // Create a new pairList each time, as position changes.
         // Check top right diagonal

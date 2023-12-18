@@ -1,4 +1,4 @@
-package NewChess.Game;
+package Game;
 
 /*
  * Class which holds a point, represented by a row and column index.

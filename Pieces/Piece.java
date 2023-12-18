@@ -24,9 +24,16 @@ public abstract class Piece {
     }
 
     /*
-     * Moves the piece to the given coordinates
+     * Moves the piece to if the coordinates are in the available moves list.
      */
-    public abstract boolean move(int targetRow, int targetCol);
+    public boolean move(int targetRow, int targetCol) {
+        if (this.availableMoves.contains(new Pair<>(targetRow, targetCol))) {
+            board.removePiece(this.row, this.col);
+            updateCoordinates(targetRow, targetCol);
+            return true;
+        }
+        else return false;
+    }
 
     /*
      * Returns the row index of the piece.

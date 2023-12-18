@@ -2,7 +2,6 @@ package GUI;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-
 import Pieces.Piece;
 
 public class ChessImage {
@@ -14,20 +13,14 @@ public class ChessImage {
     }
 
     private void createImage(Piece piece) {
-        String piece_color;
-        if (piece.getColor().equals(ChessColor.BLACK)) piece_color = "black";
-        else piece_color = "white";
+        String piece_color = piece.getColor().equals(ChessColor.BLACK) ? "black" : "white";
 
         String image_path = String.format("/images/%s_%s.png", piece_color, piece.getType().toString().toLowerCase());
-        System.out.println(image_path);
         try {
             this.image = new ImageIcon(piece.getClass().getResource(image_path));
         } catch (Exception e) {
             System.out.println("Could not find image from the file path.");
-            e.printStackTrace();
         }
-    
-
     }
 
     public Icon getImage() {
