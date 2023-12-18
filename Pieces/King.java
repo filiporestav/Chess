@@ -3,8 +3,8 @@ package Pieces;
 import java.util.ArrayList;
 
 import GUI.ChessColor;
-import Board;
-import Pair;
+import Game.Board;
+import Game.Pair;
 
 public class King extends Piece {
 

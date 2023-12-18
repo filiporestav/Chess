@@ -18,11 +18,13 @@ public class ChessImage {
         if (piece.getColor().equals(ChessColor.BLACK)) piece_color = "black";
         else piece_color = "white";
 
-        String image_path = String.format("../images/%s_%s.png", piece_color, piece.getType().toString().toLowerCase());
+        String image_path = String.format("/images/%s_%s.png", piece_color, piece.getType().toString().toLowerCase());
+        System.out.println(image_path);
         try {
             this.image = new ImageIcon(piece.getClass().getResource(image_path));
         } catch (Exception e) {
             System.out.println("Could not find image from the file path.");
+            e.printStackTrace();
         }
     
 
