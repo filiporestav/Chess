@@ -65,7 +65,6 @@ public class ChessBoard extends JPanel implements ActionListener {
         int row = this.selectedSquare.getRow();
         int col = this.selectedSquare.getCol();
         availableMoves = pieceBoard.getPieceAt(row, col).getAvailableMoves();
-        //availableMoves = pieceBoard.getAvailableMoves(row, col);
         for (Pair<Integer, Integer> indices : availableMoves) {
             GUIboard[indices.getRow()][indices.getCol()].setSelectColor();
         }
@@ -90,6 +89,7 @@ public class ChessBoard extends JPanel implements ActionListener {
         int row = btn.getRow();
         int col = btn.getCol();
 
+
         if (pieceBoard.movePieceFrom(row, col)) {
             if (this.selectedSquare != null) {
                 selectedSquare.setColor(); 
@@ -98,6 +98,13 @@ public class ChessBoard extends JPanel implements ActionListener {
             this.selectedSquare = btn;
             btn.setBackground(Color.LIGHT_GRAY);
             highlightChoices();
+
+            // Check if automatic move is possible
+            if (pieceBoard.getSelectedPiece().getAvailableMoves().size() == 1) {
+                // If only one move is available, confirm automatically
+                pieceBoard.automaticMove(row, col);
+                updateBoardGraphics();
+            }
         }
 
         else if (pieceBoard.movePieceTo(row, col)) {
@@ -107,6 +114,53 @@ public class ChessBoard extends JPanel implements ActionListener {
             this.selectedSquare.setColor(); // Resets the color
             this.selectedSquare = null;
         }
+    }
+
+    /*
+     * Performs the automatic move if only one move is available for
+     * the chosen piece.
+     */
+    public void performAutomaticMove() {
+        // Store the original position
+        int originalRow = pieceBoard.getSelectedPiece().getRow();
+        int originalCol = pieceBoard.getSelectedPiece().getCol();
+
+        // Execute automatic move
+        pieceBoard.automaticMove(originalRow, originalCol);
+        // Update the graphical board
+        updateBoardGraphics();
+
+        boolean confirmed = confirmAutomaticMove(this);
+        if (!confirmed) { // If not confirmed, move back to previous position
+            pieceBoard.getSelectedPiece().updateCoordinates(originalRow, originalCol);
+            updateBoardGraphics();
+        }
+        else {
+            pieceBoard.removePiece(originalRow, originalCol);
+        }
+    }
+
+    /*
+     * Method which updates the board graphics.
+     */
+    private void updateBoardGraphics() {
+        // Update the graphical representation of the chess board
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                GUIboard[row][col].removePiece();
+                Piece piece = pieceBoard.getPieceAt(row, col);
+                if (piece != null) GUIboard[row][col].setPiece(piece);
+            }
+        }
+    }
+
+    /*
+     * Implements the UI logic for confirming automatic move.
+     * Show confirmation doalig or button for confirmation.
+     * Return true if confirmed, else false.
+     */
+    private boolean confirmAutomaticMove(Component parentComponent) {
+        return false;
     }
 
 }

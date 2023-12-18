@@ -75,7 +75,10 @@ public class ChessSquare extends JButton {
      * piece to null and the icon to null.
      */
     protected void removePiece() {
-        setPiece(null);
+        //setPiece(null);
+        this.piece = null;
+        this.setIcon(null); // Explicitly set the icon to null
+        repaint(); // Repaint the square after removing the piece
     }
 
     public int getRow() {

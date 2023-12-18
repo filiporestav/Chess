@@ -73,6 +73,7 @@ public class Board {
         else if (this.board[row][col].getColor().equals(turnTracker.getPlayerTurn())) {
             if (stateTracker.getState().equals(GameState.SELECT)) stateTracker.changeState();
             selectedPiece = this.board[row][col];
+
             return true;
         }
         else {
@@ -95,16 +96,30 @@ public class Board {
                         this.selectedPiece = new Queen(row, col, PieceType.QUEEN, color, this);
                     }
                 }
+
+                // Check if this piece now has put the opposite king in 'check'
                 if (this.selectedPiece.check()) {
                     System.out.println("Check! Please move the king.");
                 }
-                //board[row][col] = this.selectedPiece; // Set the selected piece at the new location
                 turnTracker.changePlayerTurn();
                 stateTracker.changeState();
                 return true;
             }
         }
         return false;
+    }
+
+    /*
+     * Performs automatic move. Takes the previous coordinates as parameter.
+     */
+    public void automaticMove(int prevRow, int prevCol) {
+        Pair<Integer, Integer> coordinates = this.selectedPiece.getAvailableMoves().get(0);
+        int row = coordinates.getRow();
+        int col = coordinates.getCol();
+        board[row][col] = selectedPiece;
+        removePiece(prevRow, prevCol);
+        turnTracker.changePlayerTurn();
+        stateTracker.changeState();
     }
 
     /*
