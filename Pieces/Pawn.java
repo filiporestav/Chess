@@ -22,7 +22,7 @@ public class Pawn extends Piece {
 
             // Check two squares forward for the initial move
             targetRow = this.row + 2 * direction;
-            if (this.row == (color == ChessColor.WHITE ? 6 : 1) && board.isValidPosition(targetRow, this.col)) {
+            if (this.row == (color == ChessColor.WHITE ? 6 : 1) && board.isValidPosition(targetRow, this.col) && board.getPieceAt(targetRow, this.col)==null) {
                 pairList.add(new Pair<>(targetRow, this.col));
             }
         }

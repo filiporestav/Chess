@@ -23,13 +23,12 @@ public class ChessBoard extends JPanel implements ActionListener {
         this.pieceBoard = pieceBoard; // The "model" piece board
         this.selectedSquare = null;
         setupSquares();
-        setupPieces();
+        updateBoardGraphics();
         this.add(chessBoardPanel, BorderLayout.CENTER);
     }
 
     /*
      * Method which sets up the squares with different colors on the chess board.
-     * Takes the chess board as a JPanel as input.
      */
     private void setupSquares() {
         for (int row=0; row<size; row++) {
@@ -38,21 +37,6 @@ public class ChessBoard extends JPanel implements ActionListener {
                 square.addActionListener(this);
                 GUIboard[row][col] = square;
                 chessBoardPanel.add(square);
-            }
-        }
-    }
-
-    /*
-     * Sets up the graphics on the pieces for each ChessSquare.
-     * The position of each piece is gathered from the pieceBoard
-     * from the Board class.
-     */
-    private void setupPieces() {
-        // Setup the graphical board
-        for (int row=0; row<size; row++) {
-            for (int col=0; col<size; col++) {
-                Piece piece = pieceBoard.getPieceAt(row, col);
-                if (piece != null) GUIboard[row][col].setPiece(piece);
             }
         }
     }
@@ -89,7 +73,6 @@ public class ChessBoard extends JPanel implements ActionListener {
         int row = btn.getRow();
         int col = btn.getCol();
 
-
         if (pieceBoard.movePieceFrom(row, col)) {
             if (this.selectedSquare != null) {
                 selectedSquare.setColor(); 
@@ -108,8 +91,7 @@ public class ChessBoard extends JPanel implements ActionListener {
 
         else if (pieceBoard.movePieceTo(row, col)) {
             unhighlightChoices();
-            this.selectedSquare.removePiece();
-            btn.setPiece(pieceBoard.getSelectedPiece());
+            updateBoardGraphics();
             this.selectedSquare.setColor(); // Resets the color
             this.selectedSquare = null;
         }
@@ -130,6 +112,8 @@ public class ChessBoard extends JPanel implements ActionListener {
         int newRow = coordinates.getRow();
         int newCol = coordinates.getCol();
 
+        Piece capturePiece = pieceBoard.getPieceAt(newRow, newCol); // Create a copy of the potential "capture" piece
+
         highlightChoices();
 
         // Execute automatic move
@@ -139,23 +123,27 @@ public class ChessBoard extends JPanel implements ActionListener {
         updateBoardGraphics();
 
         boolean confirmed = showConfirmationDialog((Component) SwingUtilities.getRoot(this));
-        System.out.println(confirmed);
         if (!confirmed) { // If not confirmed, move back to previous position
-            pieceBoard.setPiece(originalRow, originalCol, selectedPiece);
             pieceBoard.removePiece(newRow, newCol);
-            unhighlightChoices();
+            //selectedPiece.updateCoordinates(originalRow, originalCol);
+            pieceBoard.setPiece(originalRow, originalCol, selectedPiece);
+            if (capturePiece != null) {
+                pieceBoard.setPiece(newRow, newCol, capturePiece);
+            }
             updateBoardGraphics();
         }
         else {
             pieceBoard.changeTurnAndState();
         }
+        unhighlightChoices();
     }
 
     /*
-     * Method which updates the board graphics.
+     * Updates the graphics on the pieces for each ChessSquare.
+     * The position of each piece is gathered from the pieceBoard
+     * from the Board class.
      */
     private void updateBoardGraphics() {
-        // Update the graphical representation of the chess board
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
                 GUIboard[row][col].removePiece();
@@ -167,7 +155,7 @@ public class ChessBoard extends JPanel implements ActionListener {
 
     /*
      * Implements the UI logic for confirming automatic move.
-     * Show confirmation doalig or button for confirmation.
+     * Show confirmation box for confirmation.
      * Return true if confirmed, else false.
      */
     private boolean showConfirmationDialog(Component parentComponent) {

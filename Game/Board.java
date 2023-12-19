@@ -11,6 +11,7 @@ public class Board {
     private StateHandler stateTracker;
     private String message;
     private Piece selectedPiece;
+    private Piece capturedPiece;
 
     public Board() {
         this.board = new Piece[size][size];
@@ -65,14 +66,14 @@ public class Board {
         return this.board[row][col];
     }
 
-    public boolean movePieceFrom(int row, int col) {
-        if (this.board[row][col] == null) {
+    public boolean movePieceFrom(int fromRow, int fromCol) {
+        if (this.board[fromRow][fromCol] == null) {
             message="You need to choose any of your pieces.";
             return false;
         }
-        else if (this.board[row][col].getColor().equals(turnTracker.getPlayerTurn())) {
+        else if (this.board[fromRow][fromCol].getColor().equals(turnTracker.getPlayerTurn())) {
             if (stateTracker.getState().equals(GameState.SELECT)) stateTracker.changeState();
-            selectedPiece = this.board[row][col];
+            selectedPiece = this.board[fromRow][fromCol];
 
             return true;
         }
@@ -90,18 +91,20 @@ public class Board {
                 if (this.selectedPiece instanceof Pawn) {
                     Pawn pawn = (Pawn) selectedPiece;
                     if (pawn.promotion()) {
+                        System.out.println("promotion");
                         ChessColor color = row==0 ? ChessColor.WHITE : ChessColor.BLACK;
-                        System.out.println("Pawn is promoting!");
                         this.selectedPiece = new Queen(row, col, PieceType.QUEEN, color, this);
+                        setPiece(row, col, this.selectedPiece);
+                        String clr = color == ChessColor.WHITE ? "White" : "Black";
+                        message = clr + " pawn is promoting!";
                     }
                 }
 
                 // Check if this piece now has put the opposite king in 'check'
                 if (this.selectedPiece.check()) {
-                    System.out.println("Check! Please move the king.");
+                    message = "Check! Please move the king.";
                 }
-                turnTracker.changePlayerTurn();
-                stateTracker.changeState();
+                changeTurnAndState();
                 return true;
             }
         }
@@ -113,9 +116,23 @@ public class Board {
      */
     public void automaticMove() {
         Pair<Integer, Integer> coordinates = this.selectedPiece.getAvailableMoves().get(0);
-        int row = coordinates.getRow();
-        int col = coordinates.getCol();
-        board[row][col] = this.selectedPiece;
+        int newRow = coordinates.getRow();
+        int newCol = coordinates.getCol();
+        
+        // Clear the original position
+        int originalRow = this.selectedPiece.getRow();
+        int originalCol = this.selectedPiece.getCol();
+        board[originalRow][originalCol] = null;
+
+        // Place the piece in the new position
+        board[newRow][newCol] = this.selectedPiece;
+
+        // Update the piece's internal position
+        this.selectedPiece.updateCoordinates(newRow, newCol);
+    }
+
+    public void undoAutomaticMove() {
+
     }
 
     /*
@@ -141,6 +158,9 @@ public class Board {
         board[row][col] = null;
     }
 
+    /*
+     * Returns the message.
+     */
     public String getMessage() {
         return this.message;
     }
@@ -167,5 +187,6 @@ public class Board {
      */
     public void setPiece(int row, int col, Piece piece) {
         board[row][col] = piece;
+        piece.updateCoordinates(row, col);
     }
 }
