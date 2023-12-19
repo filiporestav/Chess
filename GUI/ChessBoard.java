@@ -101,9 +101,8 @@ public class ChessBoard extends JPanel implements ActionListener {
 
             // Check if automatic move is possible
             if (pieceBoard.getSelectedPiece().getAvailableMoves().size() == 1) {
-                // If only one move is available, confirm automatically
-                pieceBoard.automaticMove(row, col);
-                updateBoardGraphics();
+                // If only one move is available, perform the move automatically upon confirmation
+                performAutomaticMove();
             }
         }
 
@@ -125,18 +124,30 @@ public class ChessBoard extends JPanel implements ActionListener {
         int originalRow = pieceBoard.getSelectedPiece().getRow();
         int originalCol = pieceBoard.getSelectedPiece().getCol();
 
+        Piece selectedPiece = pieceBoard.getSelectedPiece(); // Create a copy of the selected piece
+
+        Pair<Integer, Integer> coordinates = selectedPiece.getAvailableMoves().get(0);
+        int newRow = coordinates.getRow();
+        int newCol = coordinates.getCol();
+
+        highlightChoices();
+
         // Execute automatic move
-        pieceBoard.automaticMove(originalRow, originalCol);
+        pieceBoard.automaticMove();
+        pieceBoard.removePiece(originalRow, originalCol);
         // Update the graphical board
         updateBoardGraphics();
 
-        boolean confirmed = confirmAutomaticMove(this);
+        boolean confirmed = showConfirmationDialog((Component) SwingUtilities.getRoot(this));
+        System.out.println(confirmed);
         if (!confirmed) { // If not confirmed, move back to previous position
-            pieceBoard.getSelectedPiece().updateCoordinates(originalRow, originalCol);
+            pieceBoard.setPiece(originalRow, originalCol, selectedPiece);
+            pieceBoard.removePiece(newRow, newCol);
+            unhighlightChoices();
             updateBoardGraphics();
         }
         else {
-            pieceBoard.removePiece(originalRow, originalCol);
+            pieceBoard.changeTurnAndState();
         }
     }
 
@@ -159,8 +170,14 @@ public class ChessBoard extends JPanel implements ActionListener {
      * Show confirmation doalig or button for confirmation.
      * Return true if confirmed, else false.
      */
-    private boolean confirmAutomaticMove(Component parentComponent) {
-        return false;
+    private boolean showConfirmationDialog(Component parentComponent) {
+        int result = JOptionPane.showConfirmDialog(
+            parentComponent,
+            "Do you want to do the automatic move?",
+            "Confirmation",
+            JOptionPane.YES_NO_OPTION
+        );
+        return result == JOptionPane.YES_OPTION;
     }
 
 }

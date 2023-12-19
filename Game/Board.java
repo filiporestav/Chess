@@ -89,7 +89,6 @@ public class Board {
                 // Check if promotion is occuring, and handle it by converting the selected pawn to a queen
                 if (this.selectedPiece instanceof Pawn) {
                     Pawn pawn = (Pawn) selectedPiece;
-                    System.out.println("Pawn promotion: " + pawn.promotion());
                     if (pawn.promotion()) {
                         ChessColor color = row==0 ? ChessColor.WHITE : ChessColor.BLACK;
                         System.out.println("Pawn is promoting!");
@@ -110,14 +109,19 @@ public class Board {
     }
 
     /*
-     * Performs automatic move. Takes the previous coordinates as parameter.
+     * Performs automatic move.
      */
-    public void automaticMove(int prevRow, int prevCol) {
+    public void automaticMove() {
         Pair<Integer, Integer> coordinates = this.selectedPiece.getAvailableMoves().get(0);
         int row = coordinates.getRow();
         int col = coordinates.getCol();
-        board[row][col] = selectedPiece;
-        removePiece(prevRow, prevCol);
+        board[row][col] = this.selectedPiece;
+    }
+
+    /*
+     * Changes the player turn (black/white) and state (select/deploy) for the next move.
+     */
+    public void changeTurnAndState() {
         turnTracker.changePlayerTurn();
         stateTracker.changeState();
     }
@@ -156,5 +160,12 @@ public class Board {
             return false;
         }
         else return true;
+    }
+
+    /*
+     * Sets a piece at a certain row and column.
+     */
+    public void setPiece(int row, int col, Piece piece) {
+        board[row][col] = piece;
     }
 }
