@@ -11,13 +11,13 @@ public class Board {
     private StateHandler stateTracker;
     private String message;
     private Piece selectedPiece;
-    private Piece capturedPiece;
 
     public Board() {
         this.board = new Piece[size][size];
         turnTracker = new PlayerTurn(); // Playerturn is initialized to white
         stateTracker = new StateHandler(); // Handles the different states
         setupPieces();
+        initMessage();
     }
 
     /*
@@ -74,7 +74,7 @@ public class Board {
         else if (this.board[fromRow][fromCol].getColor().equals(turnTracker.getPlayerTurn())) {
             if (stateTracker.getState().equals(GameState.SELECT)) stateTracker.changeState();
             selectedPiece = this.board[fromRow][fromCol];
-
+            message = "Selected " + selectedPiece.getColor().toString().toLowerCase() + " " + selectedPiece.getType().toString().toLowerCase() + ".";
             return true;
         }
         else {
@@ -91,19 +91,15 @@ public class Board {
                 if (this.selectedPiece instanceof Pawn) {
                     Pawn pawn = (Pawn) selectedPiece;
                     if (pawn.promotion()) {
-                        System.out.println("promotion");
                         ChessColor color = row==0 ? ChessColor.WHITE : ChessColor.BLACK;
                         this.selectedPiece = new Queen(row, col, PieceType.QUEEN, color, this);
                         setPiece(row, col, this.selectedPiece);
                         String clr = color == ChessColor.WHITE ? "White" : "Black";
-                        message = clr + " pawn is promoting!";
+                        message = clr + " pawn has been promoted.";
                     }
                 }
-
                 // Check if this piece now has put the opposite king in 'check'
-                if (this.selectedPiece.check()) {
-                    message = "Check! Please move the king.";
-                }
+                this.selectedPiece.check();
                 changeTurnAndState();
                 return true;
             }
@@ -129,10 +125,15 @@ public class Board {
 
         // Update the piece's internal position
         this.selectedPiece.updateCoordinates(newRow, newCol);
+
+        message = "Only one move is possible for the chosen piece. Suggestion has been made for the next move.";
     }
 
-    public void undoAutomaticMove() {
-
+    private void changeTurnAndStateMessage() {
+        if (turnTracker.getPlayerTurn()==ChessColor.BLACK) {
+            message = "Black's turn.";
+        }
+        else message = "White's turn";
     }
 
     /*
@@ -141,6 +142,7 @@ public class Board {
     public void changeTurnAndState() {
         turnTracker.changePlayerTurn();
         stateTracker.changeState();
+        changeTurnAndStateMessage();
     }
 
     /*
@@ -156,6 +158,13 @@ public class Board {
      */
     public void removePiece(int row, int col) {
         board[row][col] = null;
+    }
+
+    /*
+     * Sets the message on the label.
+     */
+    public void setMessage(String msg) {
+        this.message = msg;
     }
 
     /*
@@ -188,5 +197,9 @@ public class Board {
     public void setPiece(int row, int col, Piece piece) {
         board[row][col] = piece;
         piece.updateCoordinates(row, col);
+    }
+
+    private void initMessage() {
+        this.message = "Welcome to chess. White begins playing.";
     }
 }

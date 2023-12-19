@@ -83,7 +83,10 @@ public abstract class Piece {
         for (Pair<Integer, Integer> coordinates : getAvailableMoves()) {
             Piece piece = board.getPieceAt(coordinates.getRow(), coordinates.getCol());
             if (piece!= null) {
-                if (piece.getType()==PieceType.KING && piece.getColor()!=this.color) return true;
+                if (piece.getType()==PieceType.KING && piece.getColor()!=this.color) {
+                    this.board.setMessage("Check! Please move the king.");
+                    return true;
+                }
             }
         }
         return false;

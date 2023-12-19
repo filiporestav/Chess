@@ -16,15 +16,24 @@ public class ChessBoard extends JPanel implements ActionListener {
     private JPanel chessBoardPanel;
     private ChessSquare selectedSquare;
     private ArrayList<Pair<Integer, Integer>> availableMoves; // Stores available moves for a selected piece
-    
+    private MessageLabel messageLabel;
+
     ChessBoard(Board pieceBoard) {
         super(new BorderLayout());
         chessBoardPanel = new JPanel(new GridLayout(size, size));
+
         this.pieceBoard = pieceBoard; // The "model" piece board
         this.selectedSquare = null;
         setupSquares();
-        updateBoardGraphics();
+
+        // Create and add message label
+        messageLabel = new MessageLabel();
+        this.add(messageLabel, BorderLayout.PAGE_END);
+        // Add the panel to the chess board
         this.add(chessBoardPanel, BorderLayout.CENTER);
+
+        updateBoardGraphics();
+
     }
 
     /*
@@ -95,6 +104,9 @@ public class ChessBoard extends JPanel implements ActionListener {
             this.selectedSquare.setColor(); // Resets the color
             this.selectedSquare = null;
         }
+
+        // Update the message based on the game state
+        messageLabel.updateText(pieceBoard.getMessage());
     }
 
     /*
@@ -125,16 +137,15 @@ public class ChessBoard extends JPanel implements ActionListener {
         boolean confirmed = showConfirmationDialog((Component) SwingUtilities.getRoot(this));
         if (!confirmed) { // If not confirmed, move back to previous position
             pieceBoard.removePiece(newRow, newCol);
-            //selectedPiece.updateCoordinates(originalRow, originalCol);
             pieceBoard.setPiece(originalRow, originalCol, selectedPiece);
             if (capturePiece != null) {
                 pieceBoard.setPiece(newRow, newCol, capturePiece);
             }
-            updateBoardGraphics();
         }
         else {
             pieceBoard.changeTurnAndState();
         }
+        updateBoardGraphics();
         unhighlightChoices();
     }
 
@@ -151,6 +162,7 @@ public class ChessBoard extends JPanel implements ActionListener {
                 if (piece != null) GUIboard[row][col].setPiece(piece);
             }
         }
+        messageLabel.updateText(pieceBoard.getMessage()); // Update text message
     }
 
     /*
