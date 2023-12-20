@@ -3,6 +3,8 @@ package GUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+
 import Game.*;
 import java.util.*;
 import javax.swing.*;
@@ -17,6 +19,7 @@ public class ChessBoard extends JPanel implements ActionListener {
     private ChessSquare selectedSquare;
     private ArrayList<Pair<Integer, Integer>> availableMoves; // Stores available moves for a selected piece
     private MessageLabel messageLabel;
+    private TimerLabel timerLabel;
 
     ChessBoard(Board pieceBoard) {
         super(new BorderLayout());
@@ -31,6 +34,16 @@ public class ChessBoard extends JPanel implements ActionListener {
         this.add(messageLabel, BorderLayout.PAGE_END);
         // Add the panel to the chess board
         this.add(chessBoardPanel, BorderLayout.CENTER);
+
+        // Initialize timer label and add it to the bottom left
+        timerLabel = new TimerLabel();
+        this.add(timerLabel, BorderLayout.PAGE_START);
+
+        // Build the full file path to music file
+        String filePath = System.getProperty("user.dir") + File.separator + "/GUI/music.wav";
+        BackgroundMusic music = new BackgroundMusic(filePath);
+        music.setVolume(-20); // Set volume (NOTE! in decibels!)
+        music.play();
 
         updateBoardGraphics();
 
@@ -73,40 +86,43 @@ public class ChessBoard extends JPanel implements ActionListener {
         }
     }
 
-    /*
-     * Method which is executed when pressing on the JPanel.
+    /* Method which runs when an event is triggered on the JPanel.
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        ChessSquare btn = (ChessSquare) e.getSource();
-        int row = btn.getRow();
-        int col = btn.getCol();
+        if (e.getSource() == timerLabel) { // If the event is from the timer label
+            timerLabel.updateTimerLabel();
+        }
 
-        if (pieceBoard.movePieceFrom(row, col)) {
-            if (this.selectedSquare != null) {
-                selectedSquare.setColor(); 
+        else { // If button is pressed
+            ChessSquare btn = (ChessSquare) e.getSource();
+            int row = btn.getRow();
+            int col = btn.getCol();
+
+            if (pieceBoard.movePieceFrom(row, col)) {
+                if (this.selectedSquare != null) {
+                    selectedSquare.setColor(); 
+                    unhighlightChoices();
+                }
+                this.selectedSquare = btn;
+                btn.setBackground(Color.LIGHT_GRAY);
+                highlightChoices();
+
+                // Check if automatic move is possible
+                if (pieceBoard.getSelectedPiece().getAvailableMoves().size() == 1) {
+                    // If only one move is available, perform the move automatically upon confirmation
+                    performAutomaticMove();
+                }
+            }
+            else if (pieceBoard.movePieceTo(row, col)) {
                 unhighlightChoices();
+                updateBoardGraphics();
+                this.selectedSquare.setColor(); // Resets the color
+                this.selectedSquare = null;
             }
-            this.selectedSquare = btn;
-            btn.setBackground(Color.LIGHT_GRAY);
-            highlightChoices();
-
-            // Check if automatic move is possible
-            if (pieceBoard.getSelectedPiece().getAvailableMoves().size() == 1) {
-                // If only one move is available, perform the move automatically upon confirmation
-                performAutomaticMove();
-            }
+            // Update the message based on the game state
+            messageLabel.updateText(pieceBoard.getMessage());
         }
-
-        else if (pieceBoard.movePieceTo(row, col)) {
-            unhighlightChoices();
-            updateBoardGraphics();
-            this.selectedSquare.setColor(); // Resets the color
-            this.selectedSquare = null;
-        }
-
-        // Update the message based on the game state
-        messageLabel.updateText(pieceBoard.getMessage());
     }
 
     /*

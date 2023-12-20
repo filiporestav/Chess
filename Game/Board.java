@@ -98,9 +98,12 @@ public class Board {
                         message = clr + " pawn has been promoted.";
                     }
                 }
-                // Check if this piece now has put the opposite king in 'check'
-                this.selectedPiece.check();
                 changeTurnAndState();
+
+                // Check if this piece now has put the opposite king in 'check'
+                if (this.selectedPiece.check()) {
+                    message = "Check! Please move the king!";
+                }
                 return true;
             }
         }
