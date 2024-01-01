@@ -28,6 +28,7 @@ public class King extends Piece {
                 int newRow = this.row + rowDirection;
                 int newCol = this.col + colDirection;
 
+                // isValidPosition returns true if inside the board
                 if (board.isValidPosition(newRow, newCol)) {
                     if (board.getPieceAt(newRow, newCol) != null) {
                         if (board.getPieceAt(newRow, newCol).getColor()!=this.color) {

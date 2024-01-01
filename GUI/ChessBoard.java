@@ -145,7 +145,7 @@ public class ChessBoard extends JPanel implements ActionListener {
 
         highlightChoices();
 
-        // Execute automatic move
+        // Execute automatic move on the "model" board
         pieceBoard.automaticMove();
         pieceBoard.removePiece(originalRow, originalCol);
         // Update the graphical board
@@ -167,6 +167,21 @@ public class ChessBoard extends JPanel implements ActionListener {
     }
 
     /*
+     * Implements the UI logic for confirming automatic move.
+     * Show confirmation box for confirmation.
+     * Return true if confirmed, else false.
+     */
+    private boolean showConfirmationDialog(Component parentComponent) {
+        int result = JOptionPane.showConfirmDialog(
+            parentComponent,
+            "Do you want to do the automatic move?",
+            "Confirmation",
+            JOptionPane.YES_NO_OPTION
+        );
+        return result == JOptionPane.YES_OPTION;
+    }
+
+    /*
      * Updates the graphics on the pieces for each ChessSquare.
      * The position of each piece is gathered from the pieceBoard
      * from the Board class.
@@ -180,21 +195,6 @@ public class ChessBoard extends JPanel implements ActionListener {
             }
         }
         messageLabel.updateText(pieceBoard.getMessage()); // Update text message
-    }
-
-    /*
-     * Implements the UI logic for confirming automatic move.
-     * Show confirmation box for confirmation.
-     * Return true if confirmed, else false.
-     */
-    private boolean showConfirmationDialog(Component parentComponent) {
-        int result = JOptionPane.showConfirmDialog(
-            parentComponent,
-            "Do you want to do the automatic move?",
-            "Confirmation",
-            JOptionPane.YES_NO_OPTION
-        );
-        return result == JOptionPane.YES_OPTION;
     }
 
 }

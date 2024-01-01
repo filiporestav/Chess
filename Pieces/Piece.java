@@ -8,7 +8,6 @@ public abstract class Piece {
 
     int row;
     int col;
-    String name;
     ChessColor color;
     PieceType type;
     Board board;
