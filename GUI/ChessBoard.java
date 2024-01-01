@@ -40,7 +40,8 @@ public class ChessBoard extends JPanel implements ActionListener {
         this.add(timerLabel, BorderLayout.PAGE_START);
 
         // Build the full file path to music file
-        String filePath = System.getProperty("user.dir") + File.separator + "/GUI/music.wav";
+        String filePath = System.getProperty("user.dir") + File.separator + "GUI/music.wav";
+        System.out.println(filePath);
         BackgroundMusic music = new BackgroundMusic(filePath);
         music.setVolume(-20); // Set volume (NOTE! in decibels!)
         music.play();

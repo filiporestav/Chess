@@ -1,6 +1,5 @@
 package GUI;
 
-import java.awt.Color;
 import Pieces.Piece;
 
 import javax.swing.*;

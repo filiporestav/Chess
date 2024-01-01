@@ -20,13 +20,19 @@ public class BackgroundMusic {
             // Get the volume control from the clip
             volumeControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+        } catch (UnsupportedAudioFileException e) {
+            // Handle UnsupportedAudioFileException
+            System.err.println("Unsupported audio file format: " + e.getMessage());
+            e.printStackTrace(); // Log the stack trace if needed
+            // Take appropriate action, e.g., show an error message to the user
+        } catch (IOException | LineUnavailableException e) {
+            // Handle other exceptions
             e.printStackTrace();
         }
     }
 
     public void play() {
-        if (clip != null) {
+        if (clip != null && !clip.isRunning()) {
             clip.start();
             clip.loop(Clip.LOOP_CONTINUOUSLY);
         }

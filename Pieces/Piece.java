@@ -1,6 +1,5 @@
 package Pieces;
 
-import java.awt.*;
 import java.util.*;
 import GUI.*;
 import Game.*;
